@@ -10,7 +10,7 @@
 
 
   var bullets = []
-  , maxBullets = 8
+  , maxBullets = 20
   , bulletSpeed = .125
   ;
 
@@ -30,7 +30,7 @@
       , p1x = cols/2
       , p1y = rows
       , gameLoop
-      , fps = 60
+      , interval = 20
       ;
   }
 
@@ -41,7 +41,7 @@
     var newBullet = {
       x: p1x,
       y: p1y-3, 
-      s: bulletSpeed
+      speed: bulletSpeed
     };
 
     bullets.push(newBullet);
@@ -54,7 +54,8 @@
       
       //console.log(this.x, this.y);
       point(it.x, it.y);
-      it.y-=bulletSpeed;
+      it.y-=it.speed;
+      it.speed+=(it.speed*.025);;
     }});
   }
 
@@ -91,7 +92,7 @@
 
   function start(){with(x1){
     cursor.off;
-    gameLoop = setInterval(eachLoop, 1000/fps);
+    gameLoop = setInterval(eachLoop, interval);
     process.stdin.setRawMode(true);
     keypress(process.stdin);
     process.stdin.resume();
@@ -126,26 +127,22 @@
   };
 
 
+var dir;
   function checkKeyDown(){
-    if (now()-lastChecked>30){
-      keyDown =null;
-    }
+    // if (now()-lastChecked>30){
+    //   keyDown =null;
+    // }
 
-    switch(keyDown){
+    switch(dir){
     case 'left':
       left();
       break;
     case 'right':
       right();
       break;
-    case 'space':
-      shoot();
-      break;
-    default:
-      lastChecked = now();
-      break;
     }
 
+    lastChecked = now();
   }
 
 process.stdin.on('keypress', function (ch, key) {
@@ -157,9 +154,9 @@ process.stdin.on('keypress', function (ch, key) {
   if (key) {
     if (key.name == 'escape') endGame();
     if (key.name == 'q') endGame();
-    if (key.name == 'left') keyDown = 'left';
-    if (key.name == 'right')  keyDown = 'right';
-    if (key.name == 'space') keyDown = 'space'
+    if (key.name == 'left') dir = 'left';
+    if (key.name == 'right') dir = 'right';
+    if (key.name == 'space') shoot();
   }
 
   if (key && key.ctrl && key.name == 'c') { 
