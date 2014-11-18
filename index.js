@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-
   'use strict';
   
   //Requires
@@ -78,7 +77,7 @@
           int(bullet.y)!==int(bullet.ly))
         {
           // Draw off
-          c.cursor.reset;
+          c.cursor.reset();
           c.point(bullet.lx, bullet.ly);
 
           // Draw on
@@ -87,7 +86,7 @@
       }
 
       function destroyBullet(){
-        c.cursor.reset;
+        c.cursor.reset();
         c.point(bullet.x, bullet.y);
         bullets.shift();
         return;
@@ -126,7 +125,7 @@
     explosions.forEach(function(exp){
       exp.lsize = exp.size;
       
-      c.cursor.reset;
+      c.cursor.reset();
       c.circ(exp.x, exp.y, exp.lsize);
 
       c.bg(255,128,0);
@@ -134,7 +133,7 @@
 
       exp.size+=exp.rate;
       if(exp.size>exp.max){
-        c.cursor.reset;
+        c.cursor.reset();
         c.circ(exp.x, exp.y, exp.lsize);
         explosions.shift();
       }
@@ -152,7 +151,7 @@
       if(int(enemy.y)!==int(enemy.ly) ||
           int(enemy.x)!==int(enemy.lx)) 
         {
-          c.cursor.reset;
+          c.cursor.reset();
           drawEnemy(int(enemy.lx), int(enemy.ly));
 
           c.bg(255,0,0);
@@ -164,7 +163,7 @@
 
   function updateScore(add){
     score+=add;
-    c.cursor.reset;
+    c.cursor.reset();
     c.fg(255,255,255);
     c.text(0, c.rows, "Score: "+ int(score));
   }
@@ -178,9 +177,7 @@
   }
 
   function erasePlayer(x, y){
-    c.cursor.reset;
-    // c.bg(0,64,128);
-    // c.scrub(x-4, y-3, x+4, y);
+    c.cursor.reset();
     c.line(x-2, y, x+2, y);  
     c.line(x, y, x, y-3);  
     c.line(x-2, y, x-2, y-2);  
@@ -199,8 +196,6 @@
 
     width = c.cols;
     height = c.rows;
-    // y=height;
-    // c.cursor.reset;
   
     updateBullets();
     updateEnemies();
@@ -215,14 +210,14 @@
   function endGame(){
     process.stdin.pause();
     clearInterval(gameLoop);
-    c.cursor.on;
-    c.cursor.reset;
+    c.cursor.on();
+    c.cursor.reset();
   }
 
 
   function start(){
-    c.cursor.off;
-    c.clear;
+    c.cursor.off();
+    c.clear();
     gameLoop = setInterval(eachLoop, interval);
     process.stdin.setRawMode(true);
     keypress(process.stdin);
