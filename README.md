@@ -1,14 +1,12 @@
 #Blitrz
 
-This is a Space Invaders style Node.js game I am writing. AXEL is being used to control the pixels. 
+This is a Space Invaders style Node.js game that runs in the console. I am using AXEL to control the ASCII-Pixels in the console window.
 
 ![Blitzr a Space-Invaders type Arcade Game using AXEL](http://i.imgur.com/ZYBBxnq.gif)
 
-You can look at the AXEL code here:
-https://github.com/F1LT3R/axel
-
-And use AXEL in your Node.js projects:
+To use AXEL in your Node.js projects:
 
 ```bash
 npm install axel
 ```
+
