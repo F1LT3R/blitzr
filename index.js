@@ -1,43 +1,53 @@
 #!/usr/bin/env node
+
+
+  'use strict';
   
   //Requires
   var keypress = require('keypress')
-    , x1 = require('axel')
+    , c = require('axel')
+    , int = parseInt
+    , sin = Math.sin
+    // , cos = Math.cos
+    // , floor = Math.floor
+    // , ceil = Math.ceil
+    // , pow = Math.pow
+    // , score = 0
+    , bullets = []
+    , maxBullets = 20
+    , bulletSpeed = 0.125
+    , width = c.cols
+    , height = c.rows
+    , p1x = c.cols/2
+    , p1y = c.rows-2
+    , lp1x = p1x
+    , lp1y = p1y
+    , gameLoop
+    , interval = 20
+    , tick =0
+    , enemies = []
+    , maxEnemies = 24
+    , enemySpeed = 0.025
     ;
-
-
-
-
-
-  var bullets = []
-  , maxBullets = 20
-  , bulletSpeed = .125
-  ;
-
-
-
-
-  with(x1){
-    // brush = 'o';
-    // 
-  // line(0,0,width,height);
-  // scrub(3,3,7,7);
   
-    
-    
-    var width = cols
-      , height = rows
-      , p1x = cols/2
-      , p1y = rows
-      , gameLoop
-      , interval = 20
-      ;
+  genEnemies();
+  function genEnemies(){
+    for (var y=0; y< c.rows; y+=3){
+      for (var x=0; x< c.cols*0.75; x+=4){
+        enemies.push({
+          x: 2+x,
+          y: y
+        });
+        if (enemies.length>=maxEnemies) {
+          return;
+        }
+      }
+    }
   }
 
-
   
 
-  function shoot(){with(x1){
+  function shoot(){
     var newBullet = {
       x: p1x,
       y: p1y-3, 
@@ -46,57 +56,129 @@
 
     bullets.push(newBullet);
 
-    if(bullets.length>maxBullets) bullets.shift();
-  }}
+    if(bullets.length>maxBullets){
+      bullets.shift();
+    }
+  }
 
   function updateBullets(){
-    bullets.forEach(function(it){with(x1){
+    bullets.forEach(function(bullet){
+    
       
-      //console.log(this.x, this.y);
-      point(it.x, it.y);
-      it.y-=it.speed;
-      it.speed+=(it.speed*.025);;
-    }});
+      // Set last positions
+      bullet.lx = bullet.x;
+      bullet.ly = bullet.y;
+      
+      // Move and accelarate
+      bullet.y-=bullet.speed;
+      bullet.speed+=(bullet.speed*.025);
+      
+
+      if( int(bullet.x)!==int(bullet.lx) ||
+          int(bullet.y)!==int(bullet.ly))
+        {
+          // Draw off
+          // if(bullet.ly){
+            c.cursor.reset;
+            c.point(bullet.lx, bullet.ly);
+          // }
+
+          // Draw on
+          c.bg(0,255,0);
+          c.point(bullet.x, bullet.y);
+      }
+      
+    })
+  }
+
+  function updateEnemies(){
+    enemies.forEach(function(enemy){
+      enemy.ly = enemy.y;
+      enemy.lx = enemy.x;
+      enemy.y+=enemySpeed;
+      enemy.x=enemy.x+(sin(tick/10)/1.5);
+     
+      // Only draw enemies again if they have moved
+      if(int(enemy.y)!==int(enemy.ly) ||
+          int(enemy.x)!==int(enemy.lx)) 
+        {
+          c.cursor.reset;
+          drawEnemy(int(enemy.lx), int(enemy.ly));
+
+          c.bg(255,0,0);
+          drawEnemy(int(enemy.x), int(enemy.y));  
+      }
+    });
   }
 
 
-  function drawPlayer(x, y){with(x1){
-    line(x-2, y, x+2, y);  
-    line(x, y, x, y-3);  
-    line(x-2, y, x-2, y-2);  
-    line(x+2, y, x+2, y-2);  
-  }}
+  function drawScore(){
+    c.cursor.reset;
+    c.fg(255,255,255);
+    // text(0, x1.rows, "Score: "+score);
+  }
+
+  function drawPlayer(x, y){
+    c.bg(0,255,0);
+    c.line(x-2, y, x+2, y);  
+    c.line(x, y, x, y-3);  
+    c.line(x-2, y, x-2, y-2);  
+    c.line(x+2, y, x+2, y-2);  
+  }
+
+  function erasePlayer(x, y){
+    c.cursor.reset;
+    // c.bg(0,64,128);
+    // c.scrub(x-4, y-3, x+4, y);
+    c.line(x-2, y, x+2, y);  
+    c.line(x, y, x, y-3);  
+    c.line(x-2, y, x-2, y-2);  
+    c.line(x+2, y, x+2, y-2);  
+  }
+
+  function drawEnemy(x,y){
+    c.line(x-1, y, x+1, y);
+    c.line(x-1, y, x-1, y+2);
+    c.line(x+1, y, x+1, y+2);
+  }
 
 
-  function eachLoop(){with(x1){
-    width = cols;
-    height = rows;
-    y=rows;
-    cursor.reset;
-    clear;
-    fg(0,0,0);
-    bg(0,255,0);
-    drawPlayer(p1x,p1y);
+  function eachLoop(){
+    tick+=1;
+
+    width = c.cols;
+    height = c.rows;
+    // y=height;
+    // c.cursor.reset;
+  
+  
     updateBullets();
+    updateEnemies();
     checkKeyDown();
-  }}
+    drawScore();
+
+    erasePlayer(lp1x,lp1y);
+    drawPlayer(p1x,p1y);
+  
+  }
 
   
-  function endGame(){with(x1){
+  function endGame(){
     process.stdin.pause();
     clearInterval(gameLoop);
-    cursor.on;
-    cursor.reset;
-  }}
+    c.cursor.on;
+    c.cursor.reset;
+  }
 
 
-  function start(){with(x1){
-    cursor.off;
+  function start(){
+    c.cursor.off;
+    c.clear;
     gameLoop = setInterval(eachLoop, interval);
     process.stdin.setRawMode(true);
     keypress(process.stdin);
     process.stdin.resume();
-  }}
+  }
 
 
   start();
@@ -104,9 +186,11 @@
 
 
   function left(){
+    lp1x = p1x;
     p1x-=p1x>4?1:0;
   }
   function right(){
+    lp1x = p1x;
     p1x+=p1x<width-4?1:0;
   }
 
@@ -164,6 +248,5 @@ process.stdin.on('keypress', function (ch, key) {
   }
   // console.log('got "keypress"', key); 
 });
-
 
 
