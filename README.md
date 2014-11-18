@@ -10,3 +10,5 @@ To use AXEL in your Node.js projects:
 npm install axel
 ```
 
+Find out more about the AXEL package here:
+https://www.npmjs.org/package/axel
