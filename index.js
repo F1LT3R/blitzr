@@ -12,7 +12,7 @@
     // , floor = Math.floor
     // , ceil = Math.ceil
     // , pow = Math.pow
-    // , score = 0
+    , score = 0
     , bullets = []
     , maxBullets = 20
     , bulletSpeed = 0.125
@@ -64,31 +64,81 @@
   function updateBullets(){
     bullets.forEach(function(bullet){
     
-      
       // Set last positions
       bullet.lx = bullet.x;
       bullet.ly = bullet.y;
       
       // Move and accelarate
       bullet.y-=bullet.speed;
-      bullet.speed+=(bullet.speed*.025);
-      
+      bullet.speed+=bullet.speed*0.025;
+    
+
 
       if( int(bullet.x)!==int(bullet.lx) ||
           int(bullet.y)!==int(bullet.ly))
         {
           // Draw off
-          // if(bullet.ly){
-            c.cursor.reset;
-            c.point(bullet.lx, bullet.ly);
-          // }
+          c.cursor.reset;
+          c.point(bullet.lx, bullet.ly);
 
           // Draw on
           c.bg(0,255,0);
           c.point(bullet.x, bullet.y);
       }
+
+      function destroyBullet(){
+        c.cursor.reset;
+        c.point(bullet.x, bullet.y);
+        bullets.shift();
+        return;
+      }
+
+      enemies.forEach(function(enemy,i){
+        var D = c.dist(enemy.x, enemy.y, bullet.x, bullet.y);
+        if(D<5){
+          genExplosion(enemy.x,enemy.y);
+          destroyBullet();
+          enemies.splice(i,1);
+          updateScore(12.34*bullet.speed);
+        }
+      });
+
+      if(bullet.y<1){
+        destroyBullet();
+      }
       
     })
+  }
+
+
+  var explosions = [];
+  function genExplosion(x,y){
+    explosions.push({
+      x:x,
+      y:y,
+      size:0,
+      lsize:0,
+      rate: 1,
+      max: 5
+    });
+  }
+  function updateExplosions(){
+    explosions.forEach(function(exp){
+      exp.lsize = exp.size;
+      
+      c.cursor.reset;
+      c.circ(exp.x, exp.y, exp.lsize);
+
+      c.bg(255,128,0);
+      c.circ(exp.x, exp.y, exp.size);
+
+      exp.size+=exp.rate;
+      if(exp.size>exp.max){
+        c.cursor.reset;
+        c.circ(exp.x, exp.y, exp.lsize);
+        explosions.shift();
+      }
+    });
   }
 
   function updateEnemies(){
@@ -112,10 +162,11 @@
   }
 
 
-  function drawScore(){
+  function updateScore(add){
+    score+=add;
     c.cursor.reset;
     c.fg(255,255,255);
-    // text(0, x1.rows, "Score: "+score);
+    c.text(0, c.rows, "Score: "+ int(score));
   }
 
   function drawPlayer(x, y){
@@ -151,15 +202,13 @@
     // y=height;
     // c.cursor.reset;
   
-  
     updateBullets();
     updateEnemies();
+    updateExplosions();
     checkKeyDown();
-    drawScore();
 
     erasePlayer(lp1x,lp1y);
     drawPlayer(p1x,p1y);
-  
   }
 
   
@@ -182,7 +231,6 @@
 
 
   start();
-
 
 
   function left(){
