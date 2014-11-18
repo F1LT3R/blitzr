@@ -14,7 +14,7 @@
     , score = 0
     , bullets = []
     , maxBullets = 20
-    , bulletSpeed = 0.125
+    , bulletSpeed = 0.425
     , width = c.cols
     , height = c.rows
     , p1x = c.cols/2
@@ -276,7 +276,6 @@ process.stdin.on('keypress', function (ch, key) {
   
   // console.log(key, ch);
 
-  // keyDown = null;
 
   if (key) {
     if (key.name == 'escape') endGame();
@@ -289,7 +288,7 @@ process.stdin.on('keypress', function (ch, key) {
   if (key && key.ctrl && key.name == 'c') { 
     endGame();
   }
-  // console.log('got "keypress"', key); 
+  
 });
 
 
