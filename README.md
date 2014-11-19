@@ -4,6 +4,20 @@ This is a Space Invaders style Node.js game that runs in the console. I am using
 
 ![Blitzr a Space-Invaders type Arcade Game using AXEL](http://i.imgur.com/ZYBBxnq.gif)
 
+    ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███
+    █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █
+                                 █████ ███████████
+    ███ ███ ███ ███ ███ ███ ███  █████ ████████
+    █ █ █ █ █ █ █ █ █ █ █ █ █ █   ███   █████ █
+                                          ██████
+                                  █
+                             █
+                         █
+                       █ █ █
+                       █ █ █
+                       █████
+
+
 To use AXEL in your Node.js projects:
 
 ```bash
