@@ -28,6 +28,9 @@
     , maxEnemies = 24
     , enemySpeed = 0.025
     ;
+
+    // var theBrush = '█';
+    var theBrush = ' ';
   
   genEnemies();
   function genEnemies(){
@@ -78,15 +81,18 @@
         {
           // Draw off
           c.cursor.reset();
+          c.brush = ' ';
           c.point(bullet.lx, bullet.ly);
 
           // Draw on
+          c.brush = theBrush;
           c.bg(0,255,0);
           c.point(bullet.x, bullet.y);
       }
 
       function destroyBullet(){
         c.cursor.reset();
+        c.brush = ' ';
         c.point(bullet.x, bullet.y);
         bullets.shift();
         return;
@@ -126,9 +132,11 @@
       exp.lsize = exp.size;
       
       c.cursor.reset();
+      c.brush = ' ';
       c.circ(exp.x, exp.y, exp.lsize);
 
       c.bg(255,128,0);
+      c.brush = theBrush;
       c.circ(exp.x, exp.y, exp.size);
 
       exp.size+=exp.rate;
@@ -152,9 +160,11 @@
           int(enemy.x)!==int(enemy.lx)) 
         {
           c.cursor.reset();
+          c.brush = ' ';
           drawEnemy(int(enemy.lx), int(enemy.ly));
 
           c.bg(255,0,0);
+          c.brush = theBrush;
           drawEnemy(int(enemy.x), int(enemy.y));  
       }
     });
@@ -169,6 +179,7 @@
   }
 
   function drawPlayer(x, y){
+    c.brush = theBrush;
     c.bg(0,255,0);
     c.line(x-2, y, x+2, y);  
     c.line(x, y, x, y-3);  
@@ -177,6 +188,7 @@
   }
 
   function erasePlayer(x, y){
+    c.brush = ' ';
     c.cursor.reset();
     c.line(x-2, y, x+2, y);  
     c.line(x, y, x, y-3);  
@@ -211,7 +223,7 @@
     process.stdin.pause();
     clearInterval(gameLoop);
     c.cursor.on();
-    c.cursor.reset();
+    c.cursor.restore();
   }
 
 
@@ -292,3 +304,25 @@ process.stdin.on('keypress', function (ch, key) {
 });
 
 
+/*
+
+ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███ ███
+ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █
+                              █████ ███████████
+ ███ ███ ███ ███ ███ ███ ███  █████ ████████
+ █ █ █ █ █ █ █ █ █ █ █ █ █ █   ███   █████ █
+                                       ██████
+
+
+
+                               █
+
+
+
+                          █
+
+                      █
+                    █ █ █
+                    █ █ █
+                    █████
+*/
